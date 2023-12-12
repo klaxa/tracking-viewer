@@ -1,0 +1,22 @@
+export struct OverviewMonthDayData {
+    day-of-month: int,
+    today: bool,
+    current-month: bool,
+    selected: bool,
+    timestamp: int,
+}
+
+export struct Task {
+    title: string,
+    class: string,
+    start: float,
+    end: float,
+    color: color,
+}
+
+export struct WeekDayData {
+    tasks: [Task],
+    day-of-week-str: string,
+    day-of-month: int,
+    today: bool,
+}

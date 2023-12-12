@@ -1,0 +1,67 @@
+import { CheckBox } from "std-widgets.slint";
+import { MonthOverview } from "./month-overview.slint";
+import { Legend } from "./legend.slint";
+import { DataView } from "./data-view.slint";
+import { OverviewMonthDayData, WeekDayData } from "./day-data.slint";
+import { State } from "./global-state.slint";
+
+export component AppWindow inherits Window {
+    in-out property<[OverviewMonthDayData]> month-overview-days <=> monthOverview.days;
+    in-out property<[int]> month-overview-weeks <=> monthOverview.weeks;
+    in-out property<int> month-overview-month <=> monthOverview.month;
+    in-out property<int> month-overview-year <=> monthOverview.year;
+    in-out property<int> current-timestamp <=> monthOverview.current-timestamp;
+    in-out property<[WeekDayData]> week-day-data <=> dataView.week-day-data;
+    callback month-overview-change-month <=> monthOverview.change-month;
+    callback month-overview-select <=> monthOverview.select;
+    callback month-overview-select-today <=> monthOverview.select-today;
+    in-out property<string> status <=> State.status;
+    title: "Tracking viewer";
+    min-height: 720px;
+    max-height: 7200px; // without this it only scales smaller than 720p?
+    preferred-height: 1080px;
+    width: self.height / 9 * 16;
+    HorizontalLayout {
+        VerticalLayout {
+            width: 20%;
+            monthOverview := MonthOverview {
+                height: 30%;
+            }
+            Rectangle {
+                height: 2px;
+                background: black;
+            }
+            Legend {}
+        }
+        Rectangle {
+            width: 2px;
+            background: black;
+        }
+        VerticalLayout {
+            dataView := DataView {
+                width: 80%;
+            }
+            HorizontalLayout {
+                alignment: space-between;
+                statusBar := Rectangle {
+                    height: 20pt;
+                    border-width: 1px;
+                    border-color: black;
+                    in-out property<string> text <=> text.text;
+                    text := Text {
+                        x: 2pt;
+                        text: root.status;
+                        horizontal-alignment: left;
+                    }
+                }
+                CheckBox {
+                    text: "Auto-update";
+                    checked: true;
+                    toggled => {
+                        State.auto-update = self.checked;
+                    }
+                }
+            }
+        }
+    }
+}

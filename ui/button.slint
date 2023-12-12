@@ -1,0 +1,24 @@
+export component Button inherits Rectangle {
+    in-out property<string> text <=> text.text;
+    in-out property<brush> text-color <=> text.color;
+    in-out property<int> font-weight <=> text.font-weight;
+    in-out property<length> font-size <=> text.font-size;
+    in-out property<bool> clickable: true;
+    in-out property<color> background-default: rgba(0, 0, 0, 0);
+    in-out property<color> background-darker: rgba(0, 0, 0, 0.5);
+    in-out property<color> background-brighter: rgba(0, 0, 0, 0.25);
+    callback clicked;
+    border-radius: self.height / 2;
+    background: !clickable ? background-default : touch.pressed ? background-darker : touch.has-hover ? background-brighter : background-default;
+    text := Text {
+        text: 1;
+        horizontal-alignment: center;
+    }
+    touch := TouchArea {
+        clicked => {
+            if (root.clickable) {
+                root.clicked();
+            }
+        }
+    }
+}

@@ -1,0 +1,14 @@
+import { Button } from "./button.slint";
+import { StyleMetrics } from "std-widgets.slint";
+
+export component MonthOverviewDay inherits Button {
+    in-out property<bool> selected: false;
+    in-out property<bool> current-month: false;
+    in-out property<bool> today: false;
+    clickable: true;
+    background-default: selected ? blue : rgba(0, 0, 0, 0);
+    background-brighter: selected ? blue.darker(25%) : rgba(0, 0, 0, 0.25);
+    background-darker: selected ? blue.darker(50%) : rgba(0, 0, 0, 0.5);
+    text-color: selected ? white : current-month ? today ? blue : black : StyleMetrics.textedit-text-color-disabled;
+    font-weight: selected ? 750 : 400;
+}

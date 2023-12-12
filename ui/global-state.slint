@@ -1,0 +1,18 @@
+import { LegendData } from "./legend-data.slint";
+
+export global State {
+    in-out property<int> now;
+    in-out property<float> now-as-frac;
+    in-out property<int> current-timestamp;
+    in-out property<int> selection-start;
+    in-out property<int> selection-end;
+    in-out property<int> day-of-month;
+    in-out property<int> month;
+    in-out property<int> year;
+    in-out property<string> month-str: "Januarch";
+    in-out property<int> week;
+    in-out property<string> status: "asdf";
+    in-out property<[LegendData]> legend-data;
+    in-out property<bool> auto-update;
+    callback select(int);
+}

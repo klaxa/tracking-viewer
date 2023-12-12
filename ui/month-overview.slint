@@ -1,0 +1,105 @@
+import { Button } from "./button.slint";
+import { MonthOverviewDay } from "./month-overview-day.slint";
+import { OverviewMonthDayData } from "./day-data.slint";
+import { State } from "./global-state.slint";
+import { StyleMetrics } from "std-widgets.slint";
+
+
+export component MonthOverview {
+    in-out property<int> current-timestamp <=> State.current-timestamp;
+    in-out property<[OverviewMonthDayData]> days: [];
+    in-out property<[int]> weeks: [];
+    in-out property<int> month <=> State.month;
+    in-out property<int> year: State.year;
+    property<[string]> month-strings: ["January", "Febuary", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    property<[string]> day-of-week-strings: ["", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+    callback change-month(int);
+    callback select <=> State.select;
+    callback select-today;
+    width: 100%;
+    height: 100%;
+    VerticalLayout {
+        spacing: 0px;
+        width: 100%;
+        height: 100%;
+        HorizontalLayout {
+            height: 12.5%;
+            width: 100%;
+            spacing: parent.spacing;
+            Button {
+                text: "<";
+                width: 10%;
+                min-width: 0;
+                clicked => {
+                    root.change-month(-1);
+                }
+            }
+            Button {
+                text: root.month-strings[root.month - 1] + " " + year;
+                width: 80%;
+                min-width: 0;
+                clicked => {
+                    root.select-today();
+                }
+            }
+            Button {
+                text: ">";
+                width: 10%;
+                min-width: 0;
+                clicked => {
+                    root.change-month(1);
+                }
+            }
+        }
+        HorizontalLayout {
+            height: 12.5%;
+            width: 100%;
+            spacing: parent.spacing;
+            for dow in root.day-of-week-strings: Button {
+                clickable: false;
+                text: dow;
+                width: 12.5%;
+                height: 12.5%;
+            }
+        }
+        VerticalLayout {
+            spacing: parent.spacing;
+            height: 100%;
+            width: 100%;
+            HorizontalLayout {
+                width: 100%;
+                height: 100%;
+                spacing: parent.spacing;
+                VerticalLayout {
+                    spacing: parent.spacing;
+                    width: 12.5%;
+                    for week in weeks: Button {
+                        clickable: false;
+                        text: week;
+                        height: 12.5%;
+                        text-color: StyleMetrics.textedit-text-color-disabled;
+                    }
+                }
+                VerticalLayout {
+                    spacing: parent.spacing;
+                    width: 100%;
+                    height: 100%;
+                    for week[wi] in 6: HorizontalLayout {
+                        spacing: parent.spacing;
+                        height: 12.5%;
+                        for day[di] in 7: MonthOverviewDay {
+                            text: days[wi * 7 + di].day-of-month;
+                            today: days[wi * 7 + di].today;
+                            current-month: days[wi * 7 + di].current-month;
+                            selected: days[wi * 7 + di].selected;
+                            width: 12.5%;
+                            clicked => {
+                                root.select(days[wi * 7 + di].timestamp);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

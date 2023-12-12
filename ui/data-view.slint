@@ -1,0 +1,21 @@
+import { TabWidget } from "std-widgets.slint";
+import { WeekView } from "./week-view.slint";
+import { WeekDayData } from "./day-data.slint";
+
+export component DataView {
+    in-out property<[WeekDayData]> week-day-data <=> tabView.week-day-data;
+    tabView := TabWidget {
+        in-out property<[WeekDayData]> week-day-data <=> weekTab.week-day-data;
+        weekTab := Tab {
+            in-out property<[WeekDayData]> week-day-data <=> weekView.week-day-data;
+            title: "Week";
+            weekView := WeekView {
+            }
+        }
+        /*Tab {
+            title: "Month";
+            Rectangle { background: pink; }
+        }
+        */
+    }
+}
