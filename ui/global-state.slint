@@ -9,10 +9,10 @@ export global State {
     in-out property<int> day-of-month;
     in-out property<int> month;
     in-out property<int> year;
-    in-out property<string> month-str: "Januarch";
+    in-out property<string> month-str;
     in-out property<int> week;
-    in-out property<string> status: "asdf";
+    in-out property<string> status;
     in-out property<[LegendData]> legend-data;
-    in-out property<bool> auto-update;
+    in-out property<bool> auto-update: true;
     callback select(int);
 }
