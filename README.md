@@ -12,7 +12,14 @@ The design takes inspiration from the gnome-calendar and other similar
 software. In general a similar type of output as `gen_chart` generates
 it is produced:
 
-TODO: image
+Example view zoomed out:
+
+![zoomed_out](https://github.com/klaxa/tracking-viewer/assets/1451995/76d0a2b7-4d1c-453d-996e-a0988700553c)
+
+Example view zoomed in:
+
+![zoomed_in](https://github.com/klaxa/tracking-viewer/assets/1451995/80f8c383-f868-4cbb-929f-9d656f2f8cc8)
+
 
 Currently there are a few limitations, for example the selection range
 is always set to the current month. Another current limitation is the
