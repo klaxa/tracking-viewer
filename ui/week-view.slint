@@ -24,27 +24,35 @@ component HourBox inherits Rectangle {
     }
 }
 
+/*component Tooltip {
+    Text {
+        text: self.text;
+        z: 1;
+        x: touch.mouse-x - 10px;
+        y: touch.mouse-y + 20px;
+    }
+    Rectangle {
+        height:100%;
+        width: 100%;
+        background: yellow;
+        border-width: 1px;
+        border-color: black;
+        drop-shadow-blur: 4px;
+    }
+}
+*/
 component TaskBox inherits Rectangle {
     in-out property<string> class;
     in-out property<bool> selected;
-    in-out property<string> tooltip;
-    // this used to work, now it's broken?
-    border-width: touch.has-hover ? 2px : 1px;
+    in-out property<string> tooltip: self.class;
+    border-width: touch.has-hover ? 1px : 0;
     border-color: touch.has-hover ? cyan : black;
-
-    /*popup := PopupWindow {
-        Rectangle {
-            height:100%;
-            width: 100%;
-            background: yellow;
-            border-width: 1px;
-            border-color: black;
-        }
-    }*/
-
     touch := TouchArea {
         width: 100%;
         height: 100%;
+//         clicked => {
+//             popup.show();
+//         }
     }
 }
 
@@ -135,19 +143,13 @@ export component WeekView {
         ScrollView {
             property<float> scale: 2;
             width: 100%;
-            viewport-width: self.width - 16px;
-            viewport-height: self.height * scale - 16px;
+            viewport-width: self.width - 16px;  // minus scrollbar, might fork later to remove
+            viewport-height: self.height * scale - 16px; // minus scrollbar, ↑
             Rectangle {
                 z: -1;
                 width: parent.viewport-width;
                 height: parent.viewport-height;
                 background: white;
-            }
-            HorizontalLayout {
-                TimeColumn {}
-                for i in 7 : WeekDayDataColumn {
-                    data: root.week-day-data[i];
-                }
             }
             TouchArea {
                 scroll-event(event) => {
@@ -161,6 +163,12 @@ export component WeekView {
                         return accept;
                     }
                     reject
+                }
+            }
+            HorizontalLayout {
+                TimeColumn {}
+                for i in 7 : WeekDayDataColumn {
+                    data: root.week-day-data[i];
                 }
             }
         }
