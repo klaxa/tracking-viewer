@@ -12,12 +12,15 @@ use std::collections::HashMap;
 use clap::Parser;
 use rand::{thread_rng, Rng};
 
-use lazy_static::lazy_static;
 use slint::Color;
 
+use lazy_static::lazy_static;
+use std::sync::Mutex;
+
 lazy_static! {
-    static ref COLORS: Vec<Color> = vec![Color::from_rgb_u8(255, 0, 0), Color::from_rgb_u8(0, 255, 0), Color::from_rgb_u8(0, 0, 255), Color::from_rgb_u8(255, 255, 0), Color::from_rgb_u8(255, 0, 255), Color::from_rgb_u8(0, 255, 255), Color::from_rgb_u8(255, 255, 255), Color::from_rgb_u8(0, 0, 0), Color::from_rgb_u8(85, 85, 85), Color::from_rgb_u8(170, 170, 170), Color::from_rgb_u8(128, 255, 0), Color::from_rgb_u8(128, 0, 255), Color::from_rgb_u8(255, 128, 0)];
+    static ref COLORS: Mutex<Vec<Color>> = Mutex::new(vec![Color::from_rgb_u8(255, 0, 0), Color::from_rgb_u8(0, 255, 0), Color::from_rgb_u8(0, 0, 255), Color::from_rgb_u8(255, 255, 0), Color::from_rgb_u8(255, 0, 255), Color::from_rgb_u8(0, 255, 255), Color::from_rgb_u8(255, 255, 255), Color::from_rgb_u8(0, 0, 0), Color::from_rgb_u8(85, 85, 85), Color::from_rgb_u8(170, 170, 170), Color::from_rgb_u8(128, 255, 0), Color::from_rgb_u8(128, 0, 255), Color::from_rgb_u8(255, 128, 0)]);
 }
+
 
 
 #[derive(Debug)]
@@ -178,17 +181,16 @@ fn update_data<T: TimeZone>(ui: &AppWindow, db: &String, now: DateTime<T>) {
         let r = r.unwrap();
         classes.push((r.class, Duration::seconds(10 * r.count)));
     }
-    let mut colors = COLORS.clone();
     let mut color_map = HashMap::new();
-    while colors.len() < classes.len() {
+    while COLORS.lock().unwrap().len() < classes.len() {
         let mut rng = thread_rng();
         let gray = rng.gen_range(10..245);
-        colors.push(Color::from_rgb_u8(gray, gray, gray));
+        COLORS.lock().unwrap().push(Color::from_rgb_u8(gray, gray, gray));
     }
     let mut i = 0;
     for c in classes {
-        color_map.insert(c.0.clone(), colors[i]);
-        legend_data.push(LegendData{class: c.0.into(), time: fmt(c.1).into(), color: colors[i]});
+        color_map.insert(c.0.clone(), COLORS.lock().unwrap()[i]);
+        legend_data.push(LegendData{class: c.0.into(), time: fmt(c.1).into(), color: COLORS.lock().unwrap()[i]});
         i += 1;
     }
 
@@ -238,6 +240,7 @@ fn update_data<T: TimeZone>(ui: &AppWindow, db: &String, now: DateTime<T>) {
             for r in row {
                 let r = r.unwrap();
                 if prev_row.ts == 0 {
+                    task_start = DateTime::from_timestamp(r.ts, 0).unwrap().into();
                     prev_row = r;
                     continue;
                 }
